@@ -12,7 +12,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Screen from "../components/Screen";
 import AppTextInput from "../components/AppTextInput";
 import AppText from "../components/AppText";
-import { SliderBox } from "react-native-image-slider-box";
+// import { SliderBox } from "react-native-image-slider-box";
 
 const images = [];
 
@@ -144,7 +144,7 @@ const HomeScreen = () => {
         </View>
       </ScrollView>
 
-      <SliderBox
+      {/* <SliderBox
         images={images}
         sliderBoxHeight={200}
         onCurrentImagePressed={(index) =>
@@ -177,7 +177,7 @@ const HomeScreen = () => {
         }}
         ImageComponentStyle={{ borderRadius: 15, width: "97%", marginTop: 5 }}
         imageLoadingColor="#2196F3"
-      />
+      /> */}
     </Screen>
   );
 };
