@@ -1,25 +1,40 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
+import { SCREEN_NAMES } from "./screenNames";
+import { TabNavigator } from "./TabNavigator";
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+          animation: "slide_from_bottom",
+
+          // animationDuration: 10000,
+        }}
+      >
+        <Stack.Screen
+          name={SCREEN_NAMES.LOGIN_SCREEN}
+          component={LoginScreen}
+        />
+        <Stack.Screen
+          name={SCREEN_NAMES.REGISTER_SCREEN}
+          component={RegisterScreen}
+        />
+        <Stack.Screen
+          name={SCREEN_NAMES.MAIN_TAB_NAV}
+          component={TabNavigator}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {},
-});
 
 export default StackNavigator;

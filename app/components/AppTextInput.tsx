@@ -12,9 +12,11 @@ interface AppTextInputProps {
   leftIcon?: any;
   rightIcon?: any;
   style?: object;
+  value?: string;
 }
 
 const AppTextInput = ({
+  value,
   placeholder,
   onChangeText,
   keyboardType,
@@ -28,18 +30,17 @@ const AppTextInput = ({
   return (
     <View style={[styles.container, style]}>
       <View style={{ flex: 1, flexDirection: "row" }}>
-        <View style={{ paddingRight: 10 }}>
-          {/* <MaterialCommunityIcons name="email" size={30} color="gray" /> */}
-          {leftIcon}
-        </View>
+        <View style={{ paddingRight: 5 }}>{leftIcon}</View>
         <TextInput
+          value={value}
           placeholder={placeholder}
           onChangeText={onChangeText}
           keyboardType={keyboardType}
           autoCapitalize={autoCapitalize}
+          numberOfLines={1}
           autoCorrect={autoCorrect}
           secureTextEntry={secureTextEntry}
-          style={{ flex: 1 }}
+          style={{ flex: 1, fontSize: 18 }}
         />
       </View>
       {rightIcon}
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     flexDirection: "row",
     width: "100%",
-    padding: 15,
+    padding: 10,
     // marginVertical: 10,
   },
 });

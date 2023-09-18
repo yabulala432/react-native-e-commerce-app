@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import StackNavigator from "./app/navigation/StackNavigator";
 
 import Screen from "./app/components/Screen";
-import AppButton from "./app/components/AppButton";
+
 function App() {
   return (
     <Screen style={styles}>

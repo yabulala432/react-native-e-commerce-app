@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StatusBar, StyleSheet, Text } from "react-native";
+import { View, StatusBar, StyleSheet, Platform } from "react-native";
 
 interface ScreenProps {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: StatusBar.currentHeight,
+    paddingTop: Platform.OS === "android" ? 24 : 0,
   },
 });
 

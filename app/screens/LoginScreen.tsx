@@ -1,13 +1,59 @@
-import React from "react";
-import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Screen from "../components/Screen";
 import AppText from "../components/AppText";
 import AppTextInput from "../components/AppTextInput";
 import AppButton from "../components/AppButton";
+import { SCREEN_NAMES } from "../navigation/screenNames";
+import {
+  getAsyncTokenAndReplaceScreenWith,
+  loginService,
+} from "../services/apiService";
 
-const LoginScreen = () => {
+interface props {
+  navigation: any;
+}
+
+const LoginScreen = ({ navigation }: props) => {
+  const [person, setPerson] = useState({
+    email: "",
+    password: "",
+  });
+
+  const hasToken = async (): Promise<void> => {
+    const token = await getAsyncTokenAndReplaceScreenWith(
+      SCREEN_NAMES.MAIN_TAB_NAV
+    );
+  };
+  useEffect(() => {
+    hasToken();
+  }, []);
+
+  const handleLogin = () => {
+    loginService(person)
+      .then(() => {
+        navigation.replace(SCREEN_NAMES.MAIN_TAB_NAV);
+      })
+      .catch((err) => {
+        console.log({ err });
+        // @ts-ignore
+        const message = err.response?.data
+          ? err.response?.data?.message
+          : "Something went wrong. Please try again later.";
+        Alert.alert("Error", message);
+      });
+  };
+
   return (
     <Screen style={styles.container}>
       <View style={styles.innerContainer}>
@@ -22,88 +68,87 @@ const LoginScreen = () => {
           />
         </View>
 
-        {/* title */}
         <View style={styles.titleContainer}>
           <AppText style={styles.title}>Login In To Your Account</AppText>
         </View>
 
-        {/* login form */}
-        <View style={styles.formContainer}>
-          <View style={styles.inputsContainer}>
-            {/* email filed */}
-            <AppTextInput
-              style={{ borderRadius: 5, backgroundColor: "#c9c9c9" }}
-              placeholder="Email"
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardType="email-address"
-              leftIcon={
-                <View style={{ paddingRight: 10 }}>
-                  <MaterialCommunityIcons
-                    name="email"
-                    size={30}
-                    color="#767676"
-                  />
+        <ScrollView>
+          <View style={[styles.middleContainer, {}]}>
+            <View style={styles.formAndButtonContainer}>
+              <View style={styles.formContainer}>
+                <AppTextInput
+                  value={person.email}
+                  onChangeText={(text: string) =>
+                    setPerson({ ...person, email: text })
+                  }
+                  style={styles.input}
+                  placeholder="Email"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  keyboardType="email-address"
+                  leftIcon={
+                    <View style={{ paddingRight: 10 }}>
+                      <MaterialCommunityIcons
+                        name="email"
+                        size={30}
+                        color="#767676"
+                      />
+                    </View>
+                  }
+                />
+                <AppTextInput
+                  value={person.password}
+                  onChangeText={(text: string) =>
+                    setPerson({ ...person, password: text })
+                  }
+                  style={styles.input}
+                  placeholder="Password"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  secureTextEntry={true}
+                  leftIcon={
+                    <View style={{ paddingRight: 10 }}>
+                      <MaterialCommunityIcons
+                        name="lock"
+                        size={30}
+                        color="#767676"
+                      />
+                    </View>
+                  }
+                />
+                <View style={styles.formTextContainer}>
+                  <TouchableOpacity>
+                    <AppText style={styles.text}>Keep me logged in</AppText>
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <AppText style={{ fontSize: 15, color: "dodgerblue" }}>
+                      Forgot Password?
+                    </AppText>
+                  </TouchableOpacity>
                 </View>
-              }
-            />
-          </View>
+              </View>
 
-          {/* password filed */}
-          <View style={styles.inputsContainer}>
-            <AppTextInput
-              style={{ borderRadius: 5, backgroundColor: "#c9c9c9" }}
-              placeholder="Password"
-              autoCapitalize="none"
-              autoCorrect={false}
-              secureTextEntry={true}
-              leftIcon={
-                <View style={{ paddingRight: 10 }}>
-                  <MaterialCommunityIcons
-                    name="lock"
-                    size={30}
-                    color="#767676"
-                  />
-                </View>
-              }
-            />
+              <View style={styles.buttonContainer}>
+                <AppButton
+                  onPress={handleLogin}
+                  style={styles.button}
+                  title="Login"
+                />
+              </View>
+            </View>
           </View>
-          {/* keep me signed in and  forgot password area */}
-          <View
-            style={{
-              width: "100%",
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                width: "100%",
+          <View style={styles.registerLink}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate(SCREEN_NAMES.REGISTER_SCREEN);
               }}
             >
-              <TouchableOpacity>
-                <AppText style={{ fontSize: 15 }}>Keep me logged in</AppText>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <AppText style={{ fontSize: 15, color: "dodgerblue" }}>
-                  Forgot Password?
-                </AppText>
-              </TouchableOpacity>
-            </View>
+              <AppText style={styles.text}>
+                Don't have an account yet? Sign up
+              </AppText>
+            </TouchableOpacity>
           </View>
-          {/* log in button */}
-          <View style={styles.buttonContainer}>
-            <AppButton style={styles.button} title="Login" />
-            {/* if user have not account */}
-            <View style={styles.registerLink}>
-              <TouchableOpacity>
-                <AppText style={{ color: "grey" }}>
-                  Don't have an account yet? Sign up
-                </AppText>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+        </ScrollView>
       </View>
     </Screen>
   );
@@ -111,16 +156,15 @@ const LoginScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
     flex: 1,
   },
   innerContainer: {
-    alignItems: "center",
     paddingTop: 40,
-    flex: 1,
-    width: "95%",
-
-    // backgroundColor: "red",
+  },
+  middleContainer: {
+    alignItems: "center",
+    flex: 3,
+    justifyContent: "center",
   },
   logoContainer: {
     alignItems: "center",
@@ -130,40 +174,48 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 40,
   },
+  input: {
+    backgroundColor: "#c9c9c9",
+    borderRadius: 5,
+  },
+  text: { color: "grey" },
   title: {
     fontSize: 20,
     fontWeight: "bold",
     marginVertical: 20,
   },
   formContainer: {
-    width: "100%",
+    gap: 10,
     padding: 10,
-    paddingVertical: 50,
-    // backgroundColor: "yellow",
+    width: "90%",
   },
-  inputsContainer: {
-    width: "100%",
-    paddingVertical: 10,
+  formTextContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 5,
   },
   buttonContainer: {
-    paddingTop: 55,
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom: 50,
-    // marginBottom: 50,
-    // backgroundColor: "red",
+    paddingTop: 50,
+    width: "90%",
   },
   button: {
-    width: 200,
-    borderRadius: 5,
     backgroundColor: "#f89620",
+    borderRadius: 5,
     height: 50,
+    width: 200,
   },
   registerLink: {
-    paddingTop: 20,
     alignItems: "center",
     justifyContent: "center",
-    // backgroundColor: "red",
+    paddingTop: 20,
+  },
+  formAndButtonContainer: {
+    alignItems: "center",
+    height: "90%",
+    justifyContent: "center",
+    width: "100%",
   },
 });
 
