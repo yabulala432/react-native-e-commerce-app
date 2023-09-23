@@ -1,14 +1,15 @@
 import React from "react";
+import { Provider } from "react-redux";
 import { StyleSheet } from "react-native";
-import StackNavigator from "./app/navigation/StackNavigator";
 
-import Screen from "./app/components/Screen";
+import StackNavigator from "./app/navigation/StackNavigator";
+import store from "./store";
 
 function App() {
   return (
-    <Screen style={styles}>
+    <Provider store={store}>
       <StackNavigator />
-    </Screen>
+    </Provider>
   );
 }
 

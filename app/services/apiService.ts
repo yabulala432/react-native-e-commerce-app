@@ -30,13 +30,6 @@ export const loginService = async (person: {
   }
 };
 
-export const getAsyncTokenAndReplaceScreenWith = async (screen: string) => {
-  const token = await AsyncStorage.getItem("loginToken");
-  const navigation = useNavigation();
-  if (token) {
-    // @ts-ignore
-    return navigation?.replace(screen);
-  } else {
-    return null;
-  }
+export const getAsyncToken = async (screen: string) => {
+  return await AsyncStorage.getItem("loginToken");
 };

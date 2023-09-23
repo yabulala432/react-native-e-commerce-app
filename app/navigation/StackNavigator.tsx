@@ -1,6 +1,6 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+import React from "react";
 
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
@@ -16,8 +16,6 @@ const StackNavigator = () => {
         screenOptions={{
           headerShown: false,
           animation: "slide_from_bottom",
-
-          // animationDuration: 10000,
         }}
       >
         <Stack.Screen

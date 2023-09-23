@@ -4,10 +4,15 @@ import { Text, StyleSheet, Platform } from "react-native";
 interface props {
   children: React.ReactNode;
   style?: object;
+  numberOfLines?: number;
 }
 
-const AppText = ({ children, style }: props) => {
-  return <Text style={[styles.container, style]}>{children}</Text>;
+const AppText = ({ children, numberOfLines, style }: props) => {
+  return (
+    <Text numberOfLines={numberOfLines} style={[styles.container, style]}>
+      {children}
+    </Text>
+  );
 };
 
 const styles = StyleSheet.create({

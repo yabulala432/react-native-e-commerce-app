@@ -8,17 +8,13 @@ import {
   Alert,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import Screen from "../components/Screen";
+import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
 import AppTextInput from "../components/AppTextInput";
-import AppButton from "../components/AppButton";
+import Screen from "../components/Screen";
 import { SCREEN_NAMES } from "../navigation/screenNames";
-import {
-  getAsyncTokenAndReplaceScreenWith,
-  loginService,
-} from "../services/apiService";
+import { getAsyncToken, loginService } from "../services/apiService";
 
 interface props {
   navigation: any;
@@ -31,9 +27,11 @@ const LoginScreen = ({ navigation }: props) => {
   });
 
   const hasToken = async (): Promise<void> => {
-    const token = await getAsyncTokenAndReplaceScreenWith(
-      SCREEN_NAMES.MAIN_TAB_NAV
-    );
+    await getAsyncToken(SCREEN_NAMES.MAIN_TAB_NAV).then((token) => {
+      if (token) {
+        navigation.replace(SCREEN_NAMES.MAIN_TAB_NAV);
+      }
+    });
   };
   useEffect(() => {
     hasToken();
@@ -46,7 +44,6 @@ const LoginScreen = ({ navigation }: props) => {
       })
       .catch((err) => {
         console.log({ err });
-        // @ts-ignore
         const message = err.response?.data
           ? err.response?.data?.message
           : "Something went wrong. Please try again later.";

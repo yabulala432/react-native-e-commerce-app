@@ -3,8 +3,9 @@ import { Animated, StyleSheet, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { SCREEN_NAMES } from "./screenNames";
+import HomeStackNavigator from "./HomeStackNavigator";
 import HomeScreen from "../screens/HomeScreen";
+import { SCREEN_NAMES } from "./screenNames";
 import ProfileScreen from "../screens/ProfileScreen";
 import CartScreen from "../screens/CartScreen";
 
@@ -26,15 +27,15 @@ export const TabNavigator = () => {
         tabBarShowLabel: false,
         tabBarStyle: {
           position: "absolute",
-          bottom: 25,
+          bottom: 5,
           left: 15,
           right: 15,
           elevation: 1,
-          backgroundColor: "#aedbca",
+          backgroundColor: "#fff",
           borderRadius: 15,
           borderTopRightRadius: 60,
           borderTopLeftRadius: 60,
-          height: 70,
+          height: 50,
         },
       }}
     >
@@ -50,7 +51,7 @@ export const TabNavigator = () => {
                 <MaterialCommunityIcons
                   name="account-outline"
                   size={size + size}
-                  color={"#3a8c63"}
+                  color={"#abcdef"}
                 />
               </View>
             ) : (
@@ -64,8 +65,8 @@ export const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name={SCREEN_NAMES.HOME_SCREEN}
-        component={HomeScreen}
+        name={SCREEN_NAMES.HOME_STACK_NAV}
+        component={HomeStackNavigator}
         options={{
           tabBarLabel: "Home",
           tabBarLabelStyle: { color: "#212122", fontSize: 12 },
@@ -75,7 +76,7 @@ export const TabNavigator = () => {
                 <MaterialCommunityIcons
                   name="home-circle-outline"
                   size={size + size}
-                  color={"#3a8c63"}
+                  color={"#abcdef"}
                 />
               </View>
             ) : (
@@ -100,7 +101,7 @@ export const TabNavigator = () => {
                 <MaterialCommunityIcons
                   name="cart"
                   size={size + size}
-                  color={"#3a8c63"}
+                  color={"#abcdef"}
                 />
               </View>
             ) : (
@@ -119,16 +120,15 @@ export const TabNavigator = () => {
 
 const styles = StyleSheet.create({
   selectedTab: {
-    // "#aedbca" more darker than this
-    backgroundColor: "#aedbca",
+    backgroundColor: "#f1f1f1",
     borderRadius: 20,
-    padding: 5,
-    marginBottom: 10,
+    padding: 0,
+    marginBottom: 0,
     elevation: 3,
-    height: 70,
+    height: "100%",
     width: 70,
     justifyContent: "center",
     alignItems: "center",
-    transform: [{ translateY: -10 }],
+    transform: [{ translateY: -2 }],
   },
 });
