@@ -4,11 +4,14 @@ import { StyleSheet } from "react-native";
 
 import StackNavigator from "./app/navigation/StackNavigator";
 import store from "./store";
+import { UserContext } from "./UserContext";
 
 function App() {
   return (
     <Provider store={store}>
-      <StackNavigator />
+      <UserContext>
+        <StackNavigator />
+      </UserContext>
     </Provider>
   );
 }

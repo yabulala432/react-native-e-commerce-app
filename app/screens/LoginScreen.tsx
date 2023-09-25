@@ -14,7 +14,7 @@ import AppText from "../components/AppText";
 import AppTextInput from "../components/AppTextInput";
 import Screen from "../components/Screen";
 import { SCREEN_NAMES } from "../navigation/screenNames";
-import { getAsyncToken, loginService } from "../services/apiService";
+import { getAsyncLoginToken, loginService } from "../services/apiService";
 
 interface props {
   navigation: any;
@@ -27,7 +27,7 @@ const LoginScreen = ({ navigation }: props) => {
   });
 
   const hasToken = async (): Promise<void> => {
-    await getAsyncToken(SCREEN_NAMES.MAIN_TAB_NAV).then((token) => {
+    await getAsyncLoginToken(SCREEN_NAMES.MAIN_TAB_NAV).then((token) => {
       if (token) {
         navigation.replace(SCREEN_NAMES.MAIN_TAB_NAV);
       }

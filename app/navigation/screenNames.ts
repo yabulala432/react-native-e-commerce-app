@@ -8,4 +8,6 @@ export const SCREEN_NAMES = Object.freeze({
   SETTINGS_SCREEN: "SettingsScreen",
   PRODUCT_INFO_SCREEN: "ProductInfoScreen",
   HOME_STACK_NAV: "HomeStack",
+  ADD_ADDRESS_SCREEN: "AddAddressScreen",
+  ADDRESS_SCREEN: "AddressScreen",
 });

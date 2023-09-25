@@ -7,13 +7,25 @@ interface props {
   style?: object;
   title: string;
   onPress?: any;
+  textStyle?: object;
+  disabled?: boolean;
 }
 
-const AppButton = ({ style, title, onPress }: props) => {
+const AppButton = ({
+  style,
+  title,
+  onPress,
+  textStyle,
+  disabled = false,
+}: props) => {
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.container, style]}
+      disabled={disabled}
+    >
       <View style={styles.button}>
-        <AppText style={styles.text}>{title}</AppText>
+        <AppText style={[styles.text, textStyle]}>{title}</AppText>
       </View>
     </TouchableOpacity>
   );
