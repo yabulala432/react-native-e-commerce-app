@@ -25,6 +25,7 @@ import Screen from "../components/Screen";
 import { SCREEN_NAMES } from "../navigation/screenNames";
 import { useSelector } from "react-redux";
 import AppButton from "../components/AppButton";
+import { address, getAllAddresses } from "../services/apiService";
 
 const data = [
   {
@@ -250,6 +251,9 @@ const HomeScreen = ({ navigation }: props) => {
     { label: "Women's clothing", value: "women's clothing" },
   ]);
 
+  const [addresses, setAddresses] = useState<address[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<address | null>(null);
+
   const onOpen = useCallback(() => {
     setOpen(true);
   }, []);
@@ -267,8 +271,15 @@ const HomeScreen = ({ navigation }: props) => {
     }
   };
 
+  const fetchAddresses = async () => {
+    getAllAddresses().then((res) => {
+      setAddresses(res.data);
+    });
+  };
+
   useEffect(() => {
     getProducts();
+    fetchAddresses();
   }, []);
 
   const cart = useSelector((state: any) => state.cart.cart);
@@ -310,7 +321,14 @@ const HomeScreen = ({ navigation }: props) => {
               size={30}
               color="#000"
             />
-            <AppText>Deliver to Yeabsira</AppText>
+            <AppText numberOfLines={1}>
+              {selectedAddress
+                ? "Deliver to " +
+                  selectedAddress.fullName +
+                  " - " +
+                  selectedAddress.city
+                : "Select a Delivery Location"}
+            </AppText>
             <MaterialCommunityIcons
               name="chevron-down"
               size={30}
@@ -541,7 +559,6 @@ const HomeScreen = ({ navigation }: props) => {
               placeholder="Select Category"
               placeholderStyle={{}}
               onOpen={onOpen}
-              // onChangeValue={onChange}
               zIndex={3000}
               zIndexInverse={1000}
             />
@@ -615,7 +632,88 @@ const HomeScreen = ({ navigation }: props) => {
               delivery options.
             </AppText>
           </View>
-          <ScrollView>
+          <ScrollView horizontal>
+            {addresses.map((address, index) => {
+              return (
+                <TouchableOpacity
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "#ccc",
+                    height: 140,
+                    width: 140,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 10,
+                    backgroundColor:
+                      selectedAddress === address ? "#FBCEB1" : "#fff",
+                  }}
+                  key={index}
+                  onPress={() => {
+                    setSelectedAddress(address);
+                    // setModalVisible(!modalVisible);
+                  }}
+                >
+                  <View
+                    style={{
+                      alignItems: "center",
+                      flexDirection: "row",
+                      gap: 3,
+                      width: "100%",
+                      paddingHorizontal: 10,
+                      marginRight: 10,
+                    }}
+                  >
+                    <AppText
+                      style={{
+                        color: "#000",
+                        fontSize: 13,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {address.fullName}
+                    </AppText>
+                    <MaterialCommunityIcons
+                      name="map-marker-outline"
+                      size={24}
+                      color="tomato"
+                      style={{ marginRight: 10 }}
+                    />
+                  </View>
+
+                  <AppText
+                    style={{
+                      color: "#000",
+                      fontSize: 13,
+                      fontWeight: "normal",
+                    }}
+                    numberOfLines={1}
+                  >
+                    {address.houseNumber + " " + address.landmark}
+                  </AppText>
+                  <AppText
+                    style={{
+                      color: "#000",
+                      fontSize: 13,
+                      fontWeight: "normal",
+                    }}
+                    numberOfLines={1}
+                  >
+                    {address.subCity + ", " + address.street}
+                  </AppText>
+                  <AppText
+                    style={{
+                      color: "#000",
+                      fontSize: 13,
+                      fontWeight: "normal",
+                    }}
+                    numberOfLines={1}
+                  >
+                    {address.city + " " + address.country}
+                  </AppText>
+                </TouchableOpacity>
+              );
+            })}
+
             <AppButton
               onPress={() => {
                 navigation.navigate(SCREEN_NAMES.ADD_ADDRESS_SCREEN);
@@ -637,63 +735,62 @@ const HomeScreen = ({ navigation }: props) => {
               }}
               title={"Add an Address or Pick-up a Point"}
             ></AppButton>
-
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 10,
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="map-marker-outline"
-                  size={24}
-                  color="dodgerblue"
-                />
-                <AppText
-                  style={{
-                    color: "dodgerblue",
-                  }}
-                >
-                  Enter a Pincode or an Address
-                </AppText>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 10,
-                }}
-              >
-                <Ionicons name="locate-sharp" size={24} color="dodgerblue" />
-                <AppText
-                  style={{
-                    color: "dodgerblue",
-                  }}
-                >
-                  Use My Current Location
-                </AppText>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 10,
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="earth"
-                  size={24}
-                  color="dodgerblue"
-                />
-                <AppText
-                  style={{
-                    color: "dodgerblue",
-                  }}
-                >
-                  Deliver Outside Country
-                </AppText>
-              </View>
-            </View>
           </ScrollView>
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+              }}
+            >
+              <MaterialCommunityIcons
+                name="map-marker-outline"
+                size={24}
+                color="dodgerblue"
+              />
+              <AppText
+                style={{
+                  color: "dodgerblue",
+                }}
+              >
+                Enter a Pincode or an Address
+              </AppText>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+              }}
+            >
+              <Ionicons name="locate-sharp" size={24} color="dodgerblue" />
+              <AppText
+                style={{
+                  color: "dodgerblue",
+                }}
+              >
+                Use My Current Location
+              </AppText>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+              }}
+            >
+              <MaterialCommunityIcons
+                name="earth"
+                size={24}
+                color="dodgerblue"
+              />
+              <AppText
+                style={{
+                  color: "dodgerblue",
+                }}
+              >
+                Deliver Outside Country
+              </AppText>
+            </View>
+          </View>
         </ModalContent>
       </BottomModal>
     </>

@@ -65,3 +65,20 @@ export const fetchUserIdService = async () => {
   if (id) return id;
   else throw new Error("No user id found");
 };
+
+export interface address {
+  country: string;
+  fullName: string;
+  phoneNumber: string;
+  city: string;
+  subCity: string;
+  woreda: string;
+  houseNumber: string;
+  street: string;
+  landmark: string;
+}
+
+export const getAllAddresses = async () => {
+  const id: string = await fetchUserIdService();
+  return await axios.get(`${url}/users/getAllAddresses/${id}`);
+};
