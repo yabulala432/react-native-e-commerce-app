@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { address, getAllAddresses } from "../services/apiService";
 import AppText from "../components/AppText";
@@ -20,7 +21,6 @@ const AddAddressScreen = () => {
   const navigation = useNavigation();
 
   const [addresses, setAddresses] = useState<address[]>([]);
-  // fetch addresses from db
   const fetchAddresses = async () => {
     try {
       await getAllAddresses().then((res) => {
@@ -34,6 +34,13 @@ const AddAddressScreen = () => {
   useEffect(() => {
     fetchAddresses();
   }, []);
+
+  // refresh the screen when the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      fetchAddresses();
+    }, [])
+  );
 
   return (
     <Screen style={styles.container}>

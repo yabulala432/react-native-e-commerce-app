@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
 
+import CartStackNavigator from "./CartStackNavigator";
 import HomeStackNavigator from "./HomeStackNavigator";
-import HomeScreen from "../screens/HomeScreen";
-import { SCREEN_NAMES } from "./screenNames";
 import ProfileScreen from "../screens/ProfileScreen";
-import CartScreen from "../screens/CartScreen";
+import { SCREEN_NAMES } from "./screenNames";
 
 const Tab = createBottomTabNavigator();
 
@@ -90,8 +89,8 @@ export const TabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name={SCREEN_NAMES.CART_SCREEN}
-        component={CartScreen}
+        name={SCREEN_NAMES.CART_STACK_NAV}
+        component={CartStackNavigator}
         options={{
           tabBarLabel: "Cart",
           tabBarLabelStyle: { color: "#212122", fontSize: 12 },

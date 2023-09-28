@@ -12,9 +12,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
 import AppTextInput from "../components/AppTextInput";
+import { getAsyncLoginToken, loginService } from "../services/apiService";
 import Screen from "../components/Screen";
 import { SCREEN_NAMES } from "../navigation/screenNames";
-import { getAsyncLoginToken, loginService } from "../services/apiService";
 
 interface props {
   navigation: any;

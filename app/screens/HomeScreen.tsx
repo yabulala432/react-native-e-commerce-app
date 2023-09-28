@@ -273,6 +273,7 @@ const HomeScreen = ({ navigation }: props) => {
 
   const fetchAddresses = async () => {
     getAllAddresses().then((res) => {
+      // console.log(res.data);
       setAddresses(res.data);
     });
   };
@@ -288,30 +289,28 @@ const HomeScreen = ({ navigation }: props) => {
   return (
     <>
       <Screen style={styles.container}>
-        <ScrollView style={{ padding: 0 }}>
-          <View style={styles.upperContainer}>
-            <AppTextInput
-              leftIcon={
-                <MaterialCommunityIcons
-                  name="magnify"
-                  size={34}
-                  color="#cfc1c9"
-                  style={{ paddingLeft: 10 }}
-                />
-              }
-              placeholder="Search"
-              style={styles.textInput}
-            />
-            <TouchableOpacity>
+        <View style={styles.upperContainer}>
+          <AppTextInput
+            leftIcon={
               <MaterialCommunityIcons
-                // mic icon
-                name="microphone-outline"
+                name="magnify"
                 size={34}
-                color="#000"
+                color="#cfc1c9"
+                style={{ paddingLeft: 10 }}
               />
-            </TouchableOpacity>
-          </View>
-
+            }
+            placeholder="Search"
+            style={styles.textInput}
+          />
+          <TouchableOpacity>
+            <MaterialCommunityIcons
+              name="microphone-outline"
+              size={34}
+              color="#000"
+            />
+          </TouchableOpacity>
+        </View>
+        <ScrollView style={{ padding: 0 }}>
           <TouchableOpacity
             onPress={() => setModalVisible(!modalVisible)}
             style={styles.titleContainer}
@@ -321,10 +320,10 @@ const HomeScreen = ({ navigation }: props) => {
               size={30}
               color="#000"
             />
-            <AppText numberOfLines={1}>
+            <AppText style={{ width: "80%" }} numberOfLines={1}>
               {selectedAddress
-                ? "Deliver to " +
-                  selectedAddress.fullName +
+                ? "Deliver " +
+                  selectedAddress.landmark +
                   " - " +
                   selectedAddress.city
                 : "Select a Delivery Location"}
@@ -605,8 +604,8 @@ const HomeScreen = ({ navigation }: props) => {
       >
         <ModalContent
           style={{
-            height: 450,
-            paddingBottom: 50,
+            height: 420,
+            paddingBottom: 60,
           }}
         >
           <View>
@@ -632,109 +631,118 @@ const HomeScreen = ({ navigation }: props) => {
               delivery options.
             </AppText>
           </View>
-          <ScrollView horizontal>
-            {addresses.map((address, index) => {
-              return (
-                <TouchableOpacity
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "#ccc",
-                    height: 140,
-                    width: 140,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: 10,
-                    backgroundColor:
-                      selectedAddress === address ? "#FBCEB1" : "#fff",
-                  }}
-                  key={index}
-                  onPress={() => {
-                    setSelectedAddress(address);
-                    // setModalVisible(!modalVisible);
-                  }}
-                >
-                  <View
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "row",
+              }}
+            >
+              {addresses.map((address, index) => {
+                return (
+                  <TouchableOpacity
                     style={{
+                      borderWidth: 1,
+                      borderColor: "#ccc",
+                      borderRadius: 20,
+                      height: 140,
+                      width: 140,
                       alignItems: "center",
-                      flexDirection: "row",
-                      gap: 3,
-                      width: "100%",
-                      paddingHorizontal: 10,
+                      justifyContent: "center",
                       marginRight: 10,
+                      backgroundColor:
+                        selectedAddress === address ? "#FBCEB1" : "#fff",
+                      paddingHorizontal: 10,
+                    }}
+                    key={index}
+                    onPress={() => {
+                      setSelectedAddress(address);
                     }}
                   >
+                    <View
+                      style={{
+                        alignItems: "center",
+                        flexDirection: "row",
+                        gap: 3,
+                        width: "100%",
+                        paddingHorizontal: 10,
+                        marginRight: 10,
+                      }}
+                    >
+                      <AppText
+                        style={{
+                          color: "#000",
+                          fontSize: 13,
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {address.fullName}
+                      </AppText>
+                      <MaterialCommunityIcons
+                        name="map-marker-outline"
+                        size={24}
+                        color="tomato"
+                        style={{ marginRight: 10 }}
+                      />
+                    </View>
+
                     <AppText
                       style={{
                         color: "#000",
                         fontSize: 13,
-                        fontWeight: "bold",
+                        fontWeight: "normal",
                       }}
+                      numberOfLines={1}
                     >
-                      {address.fullName}
+                      {address.houseNumber + " " + address.landmark}
                     </AppText>
-                    <MaterialCommunityIcons
-                      name="map-marker-outline"
-                      size={24}
-                      color="tomato"
-                      style={{ marginRight: 10 }}
-                    />
-                  </View>
+                    <AppText
+                      style={{
+                        color: "#000",
+                        fontSize: 13,
+                        fontWeight: "normal",
+                      }}
+                      numberOfLines={1}
+                    >
+                      {address.subCity + ", " + address.street}
+                    </AppText>
+                    <AppText
+                      style={{
+                        color: "#000",
+                        fontSize: 13,
+                        fontWeight: "normal",
+                      }}
+                      numberOfLines={1}
+                    >
+                      {address.city + " " + address.country}
+                    </AppText>
+                  </TouchableOpacity>
+                );
+              })}
 
-                  <AppText
-                    style={{
-                      color: "#000",
-                      fontSize: 13,
-                      fontWeight: "normal",
-                    }}
-                    numberOfLines={1}
-                  >
-                    {address.houseNumber + " " + address.landmark}
-                  </AppText>
-                  <AppText
-                    style={{
-                      color: "#000",
-                      fontSize: 13,
-                      fontWeight: "normal",
-                    }}
-                    numberOfLines={1}
-                  >
-                    {address.subCity + ", " + address.street}
-                  </AppText>
-                  <AppText
-                    style={{
-                      color: "#000",
-                      fontSize: 13,
-                      fontWeight: "normal",
-                    }}
-                    numberOfLines={1}
-                  >
-                    {address.city + " " + address.country}
-                  </AppText>
-                </TouchableOpacity>
-              );
-            })}
-
-            <AppButton
-              onPress={() => {
-                navigation.navigate(SCREEN_NAMES.ADD_ADDRESS_SCREEN);
-                setModalVisible(!modalVisible);
-              }}
-              style={{
-                backgroundColor: "#fff",
-                borderColor: "#ccc",
-                borderRadius: 3,
-                borderWidth: 1,
-                height: 140,
-                padding: 10,
-                width: 140,
-              }}
-              textStyle={{
-                color: "dodgerblue",
-                fontSize: 13,
-                textAlign: "center",
-              }}
-              title={"Add an Address or Pick-up a Point"}
-            ></AppButton>
+              <AppButton
+                onPress={() => {
+                  navigation.navigate(SCREEN_NAMES.ADD_ADDRESS_SCREEN);
+                  setModalVisible(!modalVisible);
+                }}
+                style={{
+                  backgroundColor: "#fff",
+                  borderColor: "#ccc",
+                  borderRadius: 20,
+                  borderWidth: 1,
+                  height: 140,
+                  padding: 10,
+                  width: 140,
+                }}
+                textStyle={{
+                  color: "dodgerblue",
+                  fontSize: 13,
+                  textAlign: "center",
+                }}
+                title={"Add another Address"}
+              ></AppButton>
+            </View>
           </ScrollView>
           <View>
             <View
@@ -824,6 +832,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     gap: 10,
     paddingHorizontal: 20,
     paddingTop: 10,

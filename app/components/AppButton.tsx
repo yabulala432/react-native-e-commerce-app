@@ -5,7 +5,7 @@ import AppText from "./AppText";
 
 interface props {
   style?: object;
-  title: string;
+  title: string | React.ReactNode;
   onPress?: any;
   textStyle?: object;
   disabled?: boolean;
