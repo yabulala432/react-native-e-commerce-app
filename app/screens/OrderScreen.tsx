@@ -1,19 +1,13 @@
-import React, { useEffect } from "react";
-import { View, StyleSheet, Text } from "react-native";
 import LottieView from "lottie-react-native";
-import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 
-import Screen from "../components/Screen";
+import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
+import Screen from "../components/Screen";
 import { SCREEN_NAMES } from "../navigation/screenNames";
 
 const OrderScreen = ({ navigation }: any) => {
-  useEffect(() => {
-    setTimeout(() => {
-      // @ts-ignore
-      navigation.navigate(SCREEN_NAMES.HOME_STACK_NAV);
-    }, 3000);
-  }, []);
   return (
     <Screen>
       <LottieView
@@ -26,7 +20,7 @@ const OrderScreen = ({ navigation }: any) => {
           width: "100%",
           position: "absolute",
           bottom: 80,
-          padding: 20,
+          padding: 10,
           backgroundColor: "#feb546",
         }}
       >
@@ -40,6 +34,16 @@ const OrderScreen = ({ navigation }: any) => {
         >
           Order Placed Successfully
         </AppText>
+        <AppButton
+          title="Continue Shopping"
+          onPress={() => navigation.navigate(SCREEN_NAMES.CART_SCREEN)}
+          style={{
+            backgroundColor: "#ea426e",
+            borderColor: "#ea426e",
+            borderWidth: 1,
+            marginTop: 5,
+          }}
+        />
       </View>
     </Screen>
   );

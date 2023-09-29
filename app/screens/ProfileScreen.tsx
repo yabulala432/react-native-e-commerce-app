@@ -1,8 +1,14 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+
+import Screen from "../components/Screen";
 
 const ProfileScreen = () => {
-  return <View style={styles.container}></View>;
+  return (
+    <Screen style={styles.container}>
+      <Text>Profile Screen</Text>
+    </Screen>
+  );
 };
 
 const styles = StyleSheet.create({
