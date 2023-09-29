@@ -24,7 +24,7 @@ import { SCREEN_NAMES } from "../navigation/screenNames";
 
 const CartScreen = ({ navigation }: any) => {
   const cart: Cart[] = useSelector((state: any) => state.cart.cart);
-  console.log(cart);
+  // console.log(cart);
   const total = cart.reduce((current, previous) => {
     return current + previous.price * previous.quantity;
   }, 0);

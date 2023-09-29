@@ -82,3 +82,15 @@ export const getAllAddresses = async () => {
   const id: string = await fetchUserIdService();
   return await axios.get(`${url}/users/getAllAddresses/${id}`);
 };
+
+interface orders {
+  user: string;
+  products: object;
+  totalPrice: number;
+  shippingAddress: object | null;
+  paymentMethod: string;
+}
+
+export const createOrder = async (order: orders) => {
+  return await axios.post(`${url}/orders/createOrder`, order);
+};

@@ -3,6 +3,7 @@ import React from "react";
 
 import CartScreen from "../screens/CartScreen";
 import CheckoutScreen from "../screens/CheckOutScreen";
+import OrderScreen from "../screens/OrderScreen";
 import { SCREEN_NAMES } from "./screenNames";
 
 const Stack = createNativeStackNavigator();
@@ -25,6 +26,13 @@ const CartStackNavigator = () => {
         }}
         name={SCREEN_NAMES.CHECKOUT_SCREEN}
         component={CheckoutScreen}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name={SCREEN_NAMES.ORDER_SCREEN}
+        component={OrderScreen}
       />
     </Stack.Navigator>
   );

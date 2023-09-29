@@ -12,4 +12,5 @@ export const SCREEN_NAMES = Object.freeze({
   PROFILE_SCREEN: "ProfileScreen",
   REGISTER_SCREEN: "RegisterScreen",
   SETTINGS_SCREEN: "SettingsScreen",
+  ORDER_SCREEN: "OrderScreen",
 });

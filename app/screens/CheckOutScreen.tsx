@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
 
-import AppText from "../components/AppText";
-import { getAllAddresses, address } from "../services/apiService";
-import Screen from "../components/Screen";
-import { TouchableOpacity } from "react-native";
 import AppButton from "../components/AppButton";
+import AppText from "../components/AppText";
+import { Cart, cleanCart } from "../redux/cart.reducer";
+import {
+  address,
+  getAllAddresses,
+  fetchUserIdService,
+  createOrder,
+} from "../services/apiService";
+import Screen from "../components/Screen";
+import { SCREEN_NAMES } from "../navigation/screenNames";
 
 const steps = [
   { title: "Address", content: "Address Form" },
@@ -14,20 +21,70 @@ const steps = [
   { title: "Payment", content: "Payment Details" },
   { title: "Place Order", content: "Order Summary" },
 ];
-const CheckOutScreen = () => {
+const CheckOutScreen = ({ navigation }: any) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [address, setAddress] = useState<address[] | null>([]);
   const [selectedAddress, setSelectedAddress] = useState<address | null>(null);
-  const [selected, setSelected] = useState(false);
+  const [selectedDelivery, setSelectedDelivery] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState("");
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     getAllAddresses().then((res) => {
       setAddress(res.data);
     });
+    fetchUserIdService().then((res) => {
+      setUserId(res);
+    });
   }, []);
 
+  const cart: Cart[] = useSelector((state: any) => state.cart.cart);
+
+  const total = cart.reduce((current, previous) => {
+    return current + previous.price * previous.quantity;
+  }, 0);
+
+  const dispatch = useDispatch();
+
+  const handlePlaceOrder = async () => {
+    try {
+      const order = {
+        user: userId,
+        products: cart.map((item) => {
+          return {
+            name: item.title,
+            quantity: item.quantity,
+            price: item.price,
+            image: item.image,
+          };
+        }),
+
+        totalPrice: total,
+        shippingAddress: selectedAddress,
+        paymentMethod: selectedPayment,
+      };
+
+      if (order.shippingAddress !== null) {
+        const response = await createOrder(order);
+        if (response) {
+          navigation.navigate(SCREEN_NAMES.ORDER_SCREEN);
+          dispatch(cleanCart());
+          console.log(response.data);
+        } else {
+          console.log("error");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <Screen>
+    <Screen
+      style={{
+        backgroundColor: "#fafafa",
+      }}
+    >
       <ScrollView style={styles.container}>
         <View style={{ flex: 1 }}>
           <View
@@ -97,7 +154,7 @@ const CheckOutScreen = () => {
         {currentStep == 0 && (
           <View
             style={{
-              marginHorizontal: 15,
+              padding: 20,
             }}
           >
             <AppText
@@ -211,7 +268,7 @@ const CheckOutScreen = () => {
                   >
                     <AppButton
                       style={{
-                        backgroundColor: "tomato", //"#008397",
+                        backgroundColor: "green",
                         fontSize: 13,
                         width: 50,
                         fontWeight: "normal",
@@ -226,7 +283,7 @@ const CheckOutScreen = () => {
                           style={{ marginLeft: 10 }}
                         />
                       }
-                      onPress={() => setCurrentStep(1)}
+                      onPress={() => setCurrentStep(currentStep + 1)}
                     />
                   </View>
                 )}
@@ -239,8 +296,8 @@ const CheckOutScreen = () => {
           <View
             style={{
               flex: 1,
-              marginHorizontal: 20,
               backgroundColor: "#fafafa",
+              padding: 20,
             }}
           >
             <AppText
@@ -258,7 +315,7 @@ const CheckOutScreen = () => {
                 borderRadius: 3,
                 flexDirection: "row",
               }}
-              onPress={() => setSelected(!selected)}
+              onPress={() => setSelectedDelivery(!selectedDelivery)}
             >
               <View
                 style={{
@@ -267,7 +324,7 @@ const CheckOutScreen = () => {
                 }}
               >
                 <MaterialCommunityIcons
-                  name={selected ? "check-circle" : "circle-outline"}
+                  name={selectedDelivery ? "check-circle" : "circle-outline"}
                   size={24}
                   color="tomato"
                   style={{ marginRight: 10 }}
@@ -297,27 +354,327 @@ const CheckOutScreen = () => {
                 </AppText>
               </View>
             </TouchableOpacity>
-            {selected && (
-              <AppButton
+            {selectedDelivery && (
+              <View
                 style={{
-                  backgroundColor: "tomato", //"#008397",
-                  fontSize: 13,
-                  width: 50,
-                  fontWeight: "normal",
-                  height: 50,
-                  borderRadius: 25,
+                  alignItems: "flex-end",
+                  paddingVertical: 20,
                 }}
-                title={
-                  <MaterialCommunityIcons
-                    name="check-circle-outline"
-                    size={44}
-                    color="white"
-                    style={{ marginLeft: 10 }}
-                  />
-                }
-                onPress={() => setCurrentStep(2)}
-              />
+              >
+                <AppButton
+                  style={{
+                    backgroundColor: "green", //"#008397",
+                    fontSize: 13,
+                    width: 50,
+                    fontWeight: "normal",
+                    height: 50,
+                    borderRadius: 25,
+                  }}
+                  title={
+                    <MaterialCommunityIcons
+                      name="check-circle-outline"
+                      size={44}
+                      color="white"
+                      style={{ marginLeft: 10 }}
+                    />
+                  }
+                  onPress={() => setCurrentStep(currentStep + 1)}
+                />
+              </View>
             )}
+          </View>
+        )}
+
+        {currentStep == 2 && (
+          <View
+            style={{
+              padding: 20,
+            }}
+          >
+            <AppText
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+              }}
+            >
+              Payment Method
+            </AppText>
+
+            <TouchableOpacity
+              onPress={() => setSelectedPayment("cash")}
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: 3,
+                borderWidth: 1,
+                borderColor: "#ccc",
+                padding: 20,
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 20,
+              }}
+            >
+              <MaterialCommunityIcons
+                name={selectedPayment === "cash" ? "circle" : "circle-outline"}
+                size={24}
+                color="tomato"
+                style={{ marginRight: 10 }}
+              />
+              <AppText
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                }}
+              >
+                Cash on Delivery
+              </AppText>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => setSelectedPayment("upi")}
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: 3,
+                borderWidth: 1,
+                borderColor: "#ccc",
+                padding: 20,
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 20,
+              }}
+            >
+              <MaterialCommunityIcons
+                name={selectedPayment === "upi" ? "circle" : "circle-outline"}
+                size={24}
+                color="tomato"
+                style={{ marginRight: 10 }}
+              />
+              <AppText
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                }}
+              >
+                UPI | Debit Card | Credit Card
+              </AppText>
+            </TouchableOpacity>
+
+            {selectedPayment && (
+              <View
+                style={{
+                  paddingVertical: 20,
+                  alignItems: "flex-end",
+                }}
+              >
+                <AppButton
+                  style={{
+                    backgroundColor: "green", //"#008397",
+                    fontSize: 13,
+                    width: 50,
+                    fontWeight: "normal",
+                    height: 50,
+                    borderRadius: 25,
+                  }}
+                  title={
+                    <MaterialCommunityIcons
+                      name="check-circle-outline"
+                      size={44}
+                      color="white"
+                      style={{ marginLeft: 10 }}
+                    />
+                  }
+                  onPress={() => setCurrentStep(currentStep + 1)}
+                />
+              </View>
+            )}
+          </View>
+        )}
+
+        {currentStep == 3 && (
+          <View
+            style={{
+              paddingHorizontal: 20,
+            }}
+          >
+            <AppText
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+              }}
+            >
+              Order Summary
+            </AppText>
+            <TouchableOpacity
+              onPress={() => setSelectedPayment("cash")}
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: 3,
+                borderWidth: 1,
+                borderColor: "#ccc",
+                paddingVertical: 20,
+                paddingHorizontal: 10,
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 20,
+                justifyContent: "space-between",
+              }}
+            >
+              <View>
+                <AppText
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "bold",
+                  }}
+                >
+                  Save 5% now with Amazon Pay UPI
+                </AppText>
+                <AppText
+                  style={{
+                    fontSize: 13,
+                    fontWeight: "normal",
+                  }}
+                >
+                  Pay with cash on delivery
+                </AppText>
+              </View>
+              <View>
+                <MaterialCommunityIcons
+                  name="chevron-right"
+                  size={25}
+                  color="black"
+                  style={{ marginRight: 10 }}
+                />
+              </View>
+            </TouchableOpacity>
+            <View
+              style={{
+                backgroundColor: "#fff",
+                padding: 8,
+                borderColor: "#D0D0D0",
+                borderWidth: 1,
+                marginTop: 10,
+              }}
+            >
+              <AppText>Shipping To {selectedAddress?.fullName}</AppText>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginTop: 10,
+                }}
+              >
+                <AppText
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "500",
+                    color: "grey",
+                  }}
+                >
+                  Items
+                </AppText>
+                <AppText
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "500",
+                  }}
+                >
+                  ${total}
+                </AppText>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginTop: 10,
+                }}
+              >
+                <AppText
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "500",
+                    color: "grey",
+                  }}
+                >
+                  Delivery
+                </AppText>
+                <AppText
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "500",
+                  }}
+                >
+                  ${0}
+                </AppText>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginTop: 10,
+                }}
+              >
+                <AppText
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "500",
+                    color: "grey",
+                  }}
+                >
+                  Total
+                </AppText>
+                <AppText
+                  style={{
+                    fontSize: 17,
+                    fontWeight: "bold",
+                    color: "#c60c30",
+                  }}
+                >
+                  ${total}
+                </AppText>
+              </View>
+            </View>
+
+            <View
+              style={{
+                backgroundColor: "#fff",
+                padding: 8,
+                borderColor: "#D0D0D0",
+                borderWidth: 1,
+                marginTop: 10,
+              }}
+            >
+              <AppText
+                style={{
+                  fontSize: 16,
+                  color: "grey",
+                  fontWeight: "500",
+                }}
+              >
+                Pay With
+              </AppText>
+              <AppText
+                style={{
+                  fontSize: 16,
+                  fontWeight: "500",
+                }}
+              >
+                Pay on Delivery (CASH)
+              </AppText>
+            </View>
+            <AppButton
+              style={{
+                marginTop: 20,
+                backgroundColor: "green",
+                fontSize: 13,
+                fontWeight: "normal",
+                height: 55,
+                borderRadius: 25,
+              }}
+              title="Place Order"
+              onPress={handlePlaceOrder}
+            />
           </View>
         )}
       </ScrollView>
