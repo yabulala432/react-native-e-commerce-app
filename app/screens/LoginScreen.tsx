@@ -12,9 +12,10 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
 import AppTextInput from "../components/AppTextInput";
-import { getAsyncLoginToken, loginService } from "../services/apiService";
+import { loginService } from "../services/apiService";
 import Screen from "../components/Screen";
 import { SCREEN_NAMES } from "../navigation/screenNames";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface props {
   navigation: any;
@@ -26,11 +27,11 @@ const LoginScreen = ({ navigation }: props) => {
     password: "",
   });
 
-  const hasToken = async (): Promise<void> => {
-    await getAsyncLoginToken(SCREEN_NAMES.MAIN_TAB_NAV).then((token) => {
-      if (token) {
-        navigation.replace(SCREEN_NAMES.MAIN_TAB_NAV);
-      }
+  const [token, setToken] = React.useState<string | null>(null);
+
+  const hasToken = () => {
+    AsyncStorage.getItem("token").then((token) => {
+      setToken(token);
     });
   };
   useEffect(() => {
@@ -50,6 +51,10 @@ const LoginScreen = ({ navigation }: props) => {
         Alert.alert("Error", message);
       });
   };
+
+  if (token) {
+    navigation.replace(SCREEN_NAMES.MAIN_TAB_NAV);
+  }
 
   return (
     <Screen style={styles.container}>

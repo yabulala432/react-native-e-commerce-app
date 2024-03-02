@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -26,7 +32,9 @@ const CheckOutScreen = ({ navigation }: any) => {
   const [address, setAddress] = useState<address[] | null>([]);
   const [selectedAddress, setSelectedAddress] = useState<address | null>(null);
   const [selectedDelivery, setSelectedDelivery] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState<
+    "" | "upi" | "card" | "cash"
+  >("");
   const [userId, setUserId] = useState("");
 
   useEffect(() => {
@@ -78,6 +86,13 @@ const CheckOutScreen = ({ navigation }: any) => {
       console.log(error);
     }
   };
+
+  // const handlePay = async () => {
+  //   try {
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <Screen
@@ -430,7 +445,19 @@ const CheckOutScreen = ({ navigation }: any) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => setSelectedPayment("upi")}
+              onPress={() => {
+                Alert.alert(
+                  "Comming Soon",
+                  "Sorry. This feature is not available right now.",
+                  [
+                    {
+                      text: "Cancel",
+                      onPress: () => console.log("Cancel Pressed"),
+                    },
+                  ]
+                );
+                setSelectedPayment("upi");
+              }}
               style={{
                 backgroundColor: "#fff",
                 borderRadius: 3,
@@ -454,7 +481,7 @@ const CheckOutScreen = ({ navigation }: any) => {
                   fontWeight: "bold",
                 }}
               >
-                UPI | Debit Card | Credit Card
+                UPI | Debit Card | Credit Card | Net Banking
               </AppText>
             </TouchableOpacity>
 

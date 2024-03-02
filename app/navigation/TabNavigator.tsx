@@ -22,7 +22,6 @@ export const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
           position: "absolute",
@@ -67,6 +66,7 @@ export const TabNavigator = () => {
         name={SCREEN_NAMES.HOME_STACK_NAV}
         component={HomeStackNavigator}
         options={{
+          headerShown: false,
           tabBarLabel: "Home",
           tabBarLabelStyle: { color: "#212122", fontSize: 12 },
           tabBarIcon: ({ color, size, focused }) => {
@@ -92,6 +92,7 @@ export const TabNavigator = () => {
         name={SCREEN_NAMES.CART_STACK_NAV}
         component={CartStackNavigator}
         options={{
+          headerShown: false,
           tabBarLabel: "Cart",
           tabBarLabelStyle: { color: "#212122", fontSize: 12 },
           tabBarIcon: ({ color, size, focused }) => {

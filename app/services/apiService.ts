@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 
-const url = "http://192.168.0.36:3000";
+const url = "http://192.168.0.36:3002";
 
 export const registerService = async (person: {
   name: string;
@@ -36,6 +36,10 @@ export const getAsyncLoginToken = async (screen: string) => {
 
 export const getToken = async () => {
   return await AsyncStorage.getItem("token");
+};
+
+export const removeToken = async () => {
+  return await AsyncStorage.removeItem("token");
 };
 
 interface IAddress {
@@ -93,4 +97,24 @@ interface orders {
 
 export const createOrder = async (order: orders) => {
   return await axios.post(`${url}/orders/createOrder`, order);
+};
+
+export interface UserType {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export const fetchUserFile = async () => {
+  const id = await fetchUserIdService();
+  const response = await axios.get<UserType | undefined>(
+    `${url}/users/profile/${id}`
+  );
+  return response.data;
+};
+
+export const getAllOrders = async () => {
+  const id = await fetchUserIdService();
+  return await axios.get(`${url}/orders/getUserOrders/${id}`);
 };
