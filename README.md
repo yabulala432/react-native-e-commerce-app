@@ -4,7 +4,7 @@
 
 ![Overview of the project](https://github.com/yabulala432/react-native-e-commerce-app/blob/master/app/photos/photo_5.jpg)
 
-![Overview of the project](https://github.com/yabulala432/react-native-e-commerce-app/blob/master/app/photos/photo_2.jpg)
+![Overview of the project](https://github.com/yabulala432/react-native-e-commerce-app/blob/master/app/photos/photo_2.png?raw=true)
 
 ![Overview of the project](https://github.com/yabulala432/react-native-e-commerce-app/blob/master/app/photos/photo_6.jpg)
 
